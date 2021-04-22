@@ -42,10 +42,8 @@ function getItemHandler () {
             table.processItem(item, item)
         }
 
+
         if(!item) {
-            entries
-                .sort((a, b) => a.fc > b.fc ? 1 : -1)
-                .sort((a, b) => a.date > b.date ? 1 : -1)
             cb(null, entries)
         }
     }
@@ -73,4 +71,12 @@ module.exports.parseReportBuffer = (buffer) => new Promise((res, rej) => {
             res(entries)
         })
     })
+})
+
+module.exports.parseReport('data/newreport.pdf')
+.then(res => {
+    console.log(JSON.stringify(res, null, 2))
+})
+.catch(err => {
+    console.error(err)
 })

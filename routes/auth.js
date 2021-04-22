@@ -1,3 +1,4 @@
+const auth = require("../helpers/auth");
 const router = require('express').Router()
 const {pool, format} = require('../helpers/db')
 
@@ -14,7 +15,8 @@ router.post('/login', async (req, res) => {
         status: true,
         data: {
             user_id: dbres.rows[0].user_id,
-            username: dbres.rows[0].username
+            username: dbres.rows[0].username,
+            token: auth.sign({user_id: dbres.rows[0].user_id}, auth.JWT_SALT)
         }
     })
 

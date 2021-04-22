@@ -1,6 +1,17 @@
 const router = require('express').Router()
 const {pool, format} = require('../helpers/db')
 
+router.get('/listings/stats', async (req, res) => {
+    const user_id = 1;
+
+    let stats = await pool.query('SELECT COUNT(*) AS entries, COUNT(CASE scanned WHEN 1::bit THEN 1 ELSE null end) AS scanned FROM entries WHERE listing_id IN (SELECT listing_id FROM listings WHERE user_id = $1)', [user_id])
+
+    res.send({
+        status: true,
+        data: stats.rows[0]
+    })
+})
+
 router.get('/listings', async (req, res) => {
     const user_id = 1;
 
