@@ -16,7 +16,7 @@ router.post('/login', async (req, res) => {
         data: {
             user_id: dbres.rows[0].user_id,
             username: dbres.rows[0].username,
-            token: auth.sign({user_id: dbres.rows[0].user_id}, auth.JWT_SALT)
+            token: auth.sign({id: dbres.rows[0].user_id})
         }
     })
 

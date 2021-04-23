@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken')
 
-module.exports.JWT_SALT = 'noncen\'ècoviddi'
+const SECRET_KEY = 'noncen\'ècoviddi'
 
-module.exports.sign = jwt.sign;
+module.exports.sign = (payload) => jwt.sign(payload, SECRET_KEY);
+
+module.exports.verify = (token) => jwt.verify(token, SECRET_KEY)

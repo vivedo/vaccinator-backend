@@ -1,8 +1,9 @@
+const {ensureAuth} = require("../middlewares/authMiddleware");
 const router = require('express').Router()
 const {parseReportBuffer} = require('../helpers/reportparser')
 const {pool, format} = require('../helpers/db')
 
-router.post('/upload-report', async (req, res) => {
+router.post('/upload-report', ensureAuth, async (req, res) => {
     if(!req.files || !req.files.report) {
         res.send({
             status: false,
@@ -18,10 +19,9 @@ router.post('/upload-report', async (req, res) => {
             const {report} = req.files;
             const {listing} = req.body;
             const entries = await parseReportBuffer(report.data)
-            const user_id = 1; // TODO: grab from session
 
             let dbres = await pool.query(
-                'INSERT INTO listings (user_id, listing_name) VALUES ($1, $2) RETURNING listing_id', [user_id, listing])
+                'INSERT INTO listings (user_id, listing_name) VALUES ($1, $2) RETURNING listing_id', [req.user.id, listing])
 
             const {listing_id} = dbres.rows[0]
             const entriesData = entries.map(e => ([listing_id, e.date, e.name, e.fc, e.code, e.phone]))
