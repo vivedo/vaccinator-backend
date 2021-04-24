@@ -14,7 +14,8 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.network=web"
-            - "traefik.http.routers.api.rule=Host(`api.vaccini.vivedo.me`) && PathPrefix(`/v1`)"
+            - "traefik.http.routers.vaccinator.rule=Host(`api.vaccini.vivedo.me`)"
+
         volumes:
             - ../:/app/
         command: > # installing dependencies one folder up to keep them in the container and out of the host volume
@@ -58,7 +59,7 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.network=web"
-            - "traefik.http.routers.api.rule=Host(`pgadmin.vaccini.vivedo.me`)"
+            - "traefik.http.routers.vaccinator.rule=Host(`pgadmin.vaccini.vivedo.me`)"
 
 
 networks:
