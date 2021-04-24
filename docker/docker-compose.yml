@@ -14,7 +14,7 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.network=web"
-            - "traefik.http.routers.vaccinator.rule=Host(`api.vaccini.vivedo.me`)"
+            - "traefik.http.routers.api.rule=Host(`api.vaccini.vivedo.me`)"
 
         volumes:
             - ../:/app/
@@ -59,7 +59,7 @@ services:
         labels:
             - "traefik.enable=true"
             - "traefik.network=web"
-            - "traefik.http.routers.vaccinator.rule=Host(`pgadmin.vaccini.vivedo.me`)"
+            - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.vaccini.vivedo.me`)"
 
 
 networks:
