@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3"
 
 services:
     backend:
@@ -6,8 +6,11 @@ services:
         expose:
             - 3200
         restart: unless-stopped
+        container_name: node
         networks:
-          - web
+            - web
+        depends_on:
+            - db
         labels:
             - "traefik.enable=true"
             - "traefik.network=web"
@@ -17,7 +20,46 @@ services:
         command: > # installing dependencies one folder up to keep them in the container and out of the host volume
             sh -c "cd .. && cp app/package.json . && cp app/package-lock.json . &&
                  npm i && cd app/ &&
-                 nodemon index.js"
+                 ./wait-for db:5432 -- node index.js"
+
+    db:
+        image: postgres
+        restart: unless-stopped
+        container_name: pgDB
+        networks:
+            - web
+        expose:
+            - 5432
+        environment:
+            POSTGRES_PASSWORD: vaccinator
+            POSTGRES_USER: vaccinator
+            POSTGRES_DB: vaccinator
+
+    pgsetup:
+        build: psqlclient/
+        container_name: pgSetup
+        networks:
+            - web
+        volumes:
+            - ../:/data:ro
+        command: sh -c "./wait-for db:5432 -- psql -Atx postgresql://vaccinator:vaccinator@db:5432/vaccinator < sql/create.sql"
+
+    pgAdmin:
+        image: dpage/pgadmin4
+        restart: unless-stopped
+        container_name: pgAdmin
+        networks:
+            - web
+        expose:
+            - 80
+        environment:
+            PGADMIN_DEFAULT_EMAIL: 'edoardo.viviani@gmail.com'
+            PGADMIN_DEFAULT_PASSWORD: 'ChangeMeNow!'
+        labels:
+            - "traefik.enable=true"
+            - "traefik.network=web"
+            - "traefik.http.routers.api.rule=Host(`pgadmin.vaccini.vivedo.me`)"
+
 
 networks:
     web:

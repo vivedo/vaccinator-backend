@@ -1,10 +1,17 @@
-version: "3.7"
+version: "3"
 
 services:
-  backend:
-    ports:
-      - 3200:3200
-    command: >
-      sh -c "cd .. && cp app/package.json . && cp app/package-lock.json . &&
-             npm i && cd app/ &&
-             nodemon index.js"
+    backend:
+        ports:
+            - 3200:3200
+        command: >
+            sh -c "cd .. && cp app/package.json . && cp app/package-lock.json . &&
+                   npm i && cd app/ &&
+                   ./wait-for db:5432 -- nodemon index.js"
+
+
+    pgAdmin:
+        ports:
+            - 8079:80
+        logging:
+            driver: none

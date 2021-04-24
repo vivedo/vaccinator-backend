@@ -20,19 +20,32 @@ router.post('/upload-report', ensureAuth, async (req, res) => {
             const {listing} = req.body;
             const entries = await parseReportBuffer(report.data)
 
-            let dbres = await pool.query(
-                'INSERT INTO listings (user_id, listing_name) VALUES ($1, $2) RETURNING listing_id', [req.user.id, listing])
+            const client = await pool.connect()
 
-            const {listing_id} = dbres.rows[0]
-            const entriesData = entries.map(e => ([listing_id, e.date, e.name, e.fc, e.code, e.phone]))
+            try {
+                await client.query('BEGIN')
 
-            dbres = await pool.query(
-                format('INSERT INTO entries (listing_id, entry_date, name, fc, code, phone) VALUES %L', entriesData))
+                let dbres = await client.query(
+                    'INSERT INTO listings (user_id, listing_name) VALUES ($1, $2) RETURNING listing_id', [req.user.id, listing])
 
-            res.send({
-                status: true,
-                message: 'Upload successful'
-            })
+                const {listing_id} = dbres.rows[0]
+                const entriesData = entries.map(e => ([listing_id, e.date, e.name, e.fc, e.code, e.phone]))
+
+                await client.query(
+                    format('INSERT INTO entries (listing_id, entry_date, name, fc, code, phone) VALUES %L', entriesData))
+
+                await client.query('COMMIT')
+
+                res.send({
+                    status: true,
+                    message: 'UPLOAD_SUCCESSFUL'
+                })
+            } catch (err) {
+                await client.query('ROLLBACK')
+                throw err
+            } finally {
+                client.release()
+            }
         } catch(err) {
             console.log(err)
             res.send({

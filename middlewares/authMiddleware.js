@@ -1,5 +1,10 @@
 const {verify} = require("../helpers/auth");
 
+/**
+ * Validates Authorization HTTP header and injects user property into Express' Resource
+ *
+ * Authorization: Bearer <token>
+ */
 module.exports.ensureAuth = (req, res, next) => {
     const header = req.header('Authorization')
 
@@ -11,14 +16,9 @@ module.exports.ensureAuth = (req, res, next) => {
                 req.user = user
                 return next()
             }
-        } catch(err) {
-            return res.send({
-                status: false,
-                message: 'UNAUTHORIZED'
-            })
-        }
+        } catch(err) { /* DO NOTHING AND CONTINUE SENDING UNAUTHORIZED RESPONSE*/ }
 
-    return res.send({
+    res.send({
         status: false,
         message: 'UNAUTHORIZED'
     })

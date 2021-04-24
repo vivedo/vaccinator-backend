@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS entries, listings, users;
 
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
-    username varchar(32) NOT NULL,
+    username varchar(32) NOT NULL, -- TODO: move from plain text to hash
     password varchar(32) NOT NULL
 );
 
@@ -24,4 +24,5 @@ CREATE TABLE IF NOT EXISTS entries (
     scanned bit NOT NULL DEFAULT 0::bit
 );
 
-INSERT INTO users (username, password) VALUES ('mandela', 'humanitasfinord');
+INSERT INTO users (username, password) VALUES ('user1', 'user1');
+INSERT INTO users (username, password) VALUES ('user2', 'user2');

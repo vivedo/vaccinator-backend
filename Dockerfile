@@ -1,3 +1,3 @@
-FROM node:14.16.1-buster
+FROM node:14.16.1-alpine
 
 RUN npm install -g nodemon
