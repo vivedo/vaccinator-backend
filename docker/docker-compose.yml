@@ -20,6 +20,7 @@ services:
         environment:
             VIRTUAL_HOST: api.vaccini.vivedo.me
             VIRTUAL_PORT: 3200
+            LETSENCRYPT_HOST: api.vaccini.vivedo.me
 
     db:
         image: postgres
@@ -56,6 +57,7 @@ services:
             PGADMIN_DEFAULT_PASSWORD: 'ChangeMeNow!'
             VIRTUAL_HOST: pgadmin.vaccini.vivedo.me
             VIRTUAL_PORT: 80
+            LETSENCRYPT_HOST: pgadmin.vaccini.vivedo.me
 
 networks:
     web:

@@ -19,6 +19,10 @@ app.use(require('./routes/uploadreport'))
 app.use(require('./routes/listings'))
 app.use(require('./routes/auth'))
 
+app.get('/', (req, res) => {
+    res.send({status: true, message: 'Welcome to Vaccinator API'})
+})
+
 const port = process.env.PORT || 3200;
 
 app.listen(port, () =>
